@@ -1,5 +1,6 @@
 // proboscis.js
 // 2013/11/17
+// P. Mark Anderson
 
 var five = require("johnny-five");
 var config = require('./config');
@@ -14,7 +15,8 @@ exports.connectDevices = function() {
 
 	  // Set up devices
 	  for (var deviceName in config.board) {
-	    if (config.board.hasOwnProperty(deviceName)) {      
+	    if (config.board.hasOwnProperty(deviceName)) {
+        console.log("new device:", deviceName);
 	      devices[deviceName] = new Device(config.board[deviceName]);
 	    }
 	  }
@@ -56,9 +58,12 @@ var addTriggers = function() {
         // on which observer
         // for an event triggered on a sender.
 
-        sender.addEventHandler(triggeredEventName, function(data) {
-          observer.notify(targetEventName, data);
-        });
+        (function(observer, triggeredEventName, targetEventName) {          
+          sender.addEventHandler(triggeredEventName, function(data) {
+            console.log(triggeredEventName, "triggered. Notifying observer:", targetEventName);
+            observer.notify(targetEventName, data);
+          });
+        })(observer, triggeredEventName, targetEventName);
 
 
       } // End target events
