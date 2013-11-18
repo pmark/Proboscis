@@ -85,10 +85,10 @@ var DEVICE_TYPES = {
 			return new five.IR.Motion(pin);
 		},
 		events: {
-			motionstarted: {
+			motionstart: {
 				state: "triggered"
 			},
-			motionended: {
+			motionend: {
 				state: "ready"
 			}
 		}
