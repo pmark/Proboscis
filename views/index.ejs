@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>
+      <img src="/images/R2-D2-probe.png"/>
+    </p>
+  </body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+  var socket = io.connect('http://localhost');
+
+  socket.on('news', function (data)
+  {
+    console.log(data);
+    socket.emit('my other event', { my: 'data' });
+  });
+
+  socket.on('motionstart', function (data)
+  {
+    console.log(data);
+  });
+
+  socket.on("motionstart", function( data ) {
+    console.log( "motionstart" );
+  });
+
+  socket.on("motionend", function( data ) {
+    console.log( "motionend" );
+  });
+
+
+</script>
+
+</html>
