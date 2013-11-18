@@ -26,10 +26,10 @@ exports.triggers = {
 
 	led1: {
 		on: {
-			led2: "on"
+			led2: "off"
 		},
 		off: {
-			led2: "off"
+			led2: "on"
 		}
 	}
 };

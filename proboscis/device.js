@@ -24,39 +24,43 @@ var Device = function(options) {
 
 	this.api = this.init(this.pin);
 	this.eventEmitter = new EventEmitter();
-
-	if (typeof(this.api.on) !== "function") {
-		// Teach this thing how to observe events.
-		this.api.on = this.eventEmitter.on;
-	}
 };
 
 Device.prototype = {
 	constructor: Device,
 
 	addEventHandler: function(triggeredEventName, callback) {
-		console.log("[DEVICE] addEventHandler", triggeredEventName);
+		console.log("[ DEVICE", this.pin, "] addEventHandler", triggeredEventName);
 
-		this.api.on(triggeredEventName, function() {
-			console.log("[DEVICE] triggered", triggeredEventName);			
+		var self = this;
+
+		var fn = function(argument) {
+			console.log("[ DEVICE", self.pin, "] triggered", triggeredEventName);
 			callback.call(arguments);
-		})
+		};
+
+		if (typeof(this.api.addListener) === 'function') {
+			this.api.addListener(triggeredEventName, fn);
+		}
+
+		// TODO: Confirm that duplicate events are not
+		// being sent for devices with API event listeners
+		// that also observe another device's events.
+		this.eventEmitter.on(triggeredEventName, fn);
 	},
 
 	notify: function(targetEventName, data) {
-		console.log("[DEVICE] notify", targetEventName);
+		if (this.events) {
+			var e = this.events[targetEventName];
 
-		if (!this.events) {
-			return;
+			if (e.action) {
+				e.action(this.api, data);
+			}
+
+			this.state = e.state;
+			console.log("[ DEVICE", this.pin, "] notify:", targetEventName, "  state:", this.state);
 		}
 
-		var e = this.events[targetEventName];
-
-		if (e.action) {
-			e.action(this.api, data);
-		}
-
-		this.state = e.state;
 		this.eventEmitter.emit(targetEventName, data);
 	}
 };

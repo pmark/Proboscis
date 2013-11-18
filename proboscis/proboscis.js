@@ -60,7 +60,6 @@ var addTriggers = function() {
 
         (function(observer, triggeredEventName, targetEventName) {          
           sender.addEventHandler(triggeredEventName, function(data) {
-            console.log(triggeredEventName, "triggered. Notifying observer:", targetEventName);
             observer.notify(targetEventName, data);
           });
         })(observer, triggeredEventName, targetEventName);
